@@ -26,10 +26,10 @@ This project demonstrates an OAuth 2.0 flow with X (formerly Twitter) using the 
 
 The project requires the following environment variables to be set in a `.env.local` file:
 
-NEXT_PUBLIC_BEARER_TOKEN=
-NEXT_PUBLIC_CLIENT_ID=
-NEXT_PUBLIC_CLIENT_SECRET=
-NEXT_PUBLIC_CALLBACK_URL=http://localhost:3000/onboarding
+NEXT_PUBLIC_BEARER_TOKEN=  
+NEXT_PUBLIC_CLIENT_ID=  
+NEXT_PUBLIC_CLIENT_SECRET=  
+NEXT_PUBLIC_CALLBACK_URL=http://localhost:3000/onboarding  
 
 - **NEXT_PUBLIC_BEARER_TOKEN**: Used for making authenticated requests to the X API.
 - **NEXT_PUBLIC_CLIENT_ID**: The client ID for your X OAuth application.
