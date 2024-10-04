@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { generateAuthUrl } from "./lib/authClient";
+import { generateAuthUrl } from "./lib/xApiClient";
 
 /**
  * Home component for the X OAuth Demo.

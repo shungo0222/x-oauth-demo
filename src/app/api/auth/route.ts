@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthClient, generateAuthUrl } from "../../lib/authClient";
+import { getAuthClient, generateAuthUrl } from "../../lib/xApiClient";
 import { OAUTH_STATE } from "../../lib/constants";
 
 /**
