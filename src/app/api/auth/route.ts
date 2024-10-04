@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthClient, generateAuthUrl } from "../../authClient";
-import { OAUTH_STATE } from "../../constants";
+import { OAUTH_STATE } from "../../lib/constants";
 
 /**
  * Handle GET request for OAuth access token.

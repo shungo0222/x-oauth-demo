@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { API_ENDPOINTS, OAUTH_STATE } from "../constants";
+import { API_ENDPOINTS, OAUTH_STATE } from "../lib/constants";
 
 /**
  * Onboarding component handles OAuth authentication and fetches user data from the API.
