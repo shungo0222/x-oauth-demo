@@ -128,7 +128,23 @@ export default function Onboarding() {
             {Object.entries(userData).map(([key, value]) => (
               <tr key={key}>
                 <td className="border border-gray-300 px-4 py-2">{key}</td>
-                <td className="border border-gray-300 px-4 py-2">{String(value)}</td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {/* Check if value is an object (like public_metrics) and handle accordingly */}
+                  {typeof value === "object" && value !== null ? (
+                    <table className="table-auto border-collapse border border-gray-200">
+                      <tbody>
+                        {Object.entries(value).map(([subKey, subValue]) => (
+                          <tr key={subKey}>
+                            <td className="border border-gray-200 px-2 py-1">{subKey}</td>
+                            <td className="border border-gray-200 px-2 py-1">{String(subValue)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  ) : (
+                    String(value)
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
