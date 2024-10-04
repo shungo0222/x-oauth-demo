@@ -12,8 +12,12 @@ This project demonstrates an OAuth 2.0 flow with X (formerly Twitter) using the 
 - **Onboarding (`onboarding/page.tsx`)**: 
   After the user is authenticated and redirected back to this page, the access token is used to fetch user data from the X API and display it.
 
-- **authClient.ts**: 
-  Contains the logic for generating the OAuth client and authorization URL. The `getAuthClient` function ensures a singleton instance of the OAuth client is created, and `generateAuthUrl` generates the OAuth URL with the necessary parameters.
+- **X API Client (`lib/xApiClient.ts`)**: 
+  This file manages the creation and usage of OAuth2 clients for user-specific or application-level authentication using the X (formerly Twitter) API. It includes functions to generate the authorization URL, refresh expired tokens, and handle both OAuth2User and OAuth2Bearer clients.  
+  - getAuthClient: Ensures a singleton instance of the OAuth2User client is created for user-specific authentication. It also handles token expiration by refreshing the access token if necessary.  
+  - getBearerClient: Returns a singleton instance of the OAuth2Bearer client for application-level authentication, using a bearer token.
+  - generateAuthUrl: Generates the OAuth 2.0 authorization URL, allowing users to authenticate with X.  
+  - getApiClient: Returns the Client instance for interacting with the X API. Depending on whether OAuth2User or OAuth2Bearer is required, the appropriate client is initialized and, in the case of OAuth2User, the function checks and refreshes tokens if needed. Additionally, a token can be manually set for OAuth2User clients.  
 
 - **constants.ts**: 
   Stores constants such as API endpoints and the OAuth state (`OAUTH_STATE`) for easy reuse throughout the project.
