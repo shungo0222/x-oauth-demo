@@ -1,5 +1,5 @@
 import { auth } from "twitter-api-sdk";
-import { OAUTH_STATE } from "./lib/constants";
+import { OAUTH_STATE } from "./constants";
 
 // Initialize the authClient as null. It will be instantiated only once.
 let authClient: auth.OAuth2User | null = null;
