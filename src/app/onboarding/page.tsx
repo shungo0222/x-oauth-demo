@@ -91,12 +91,24 @@ export default function Onboarding() {
             </tr>
           </thead>
           <tbody>
-            {Object.entries(tokenData).map(([key, value]) => (
-              <tr key={key}>
-                <td className="border border-gray-300 px-4 py-2">{key}</td>
-                <td className="border border-gray-300 px-4 py-2">{String(value)}</td>
-              </tr>
-            ))}
+            {Object.entries(tokenData).map(([key, value]) => {
+              const stringValue = String(value);
+              const unixTimestamp = typeof value === "number" ? value : parseInt(stringValue, 10);
+              return (
+                <tr key={key}>
+                  <td className="border border-gray-300 px-4 py-2">{key}</td>
+                  <td className="border border-gray-300 px-4 py-2">
+                    {key === "expires_at" ? (
+                      <>
+                        {stringValue} (Local Time: {new Date(unixTimestamp).toLocaleString()})
+                      </>
+                    ) : (
+                      stringValue
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       ) : (
