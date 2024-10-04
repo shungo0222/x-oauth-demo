@@ -1,37 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Client } from "twitter-api-sdk";
+import { getApiClient } from "../../lib/xApiClient";
 
 /**
  * Handle GET request to fetch user information from the X API.
- * It requires an access token to authenticate the request.
+ * This function uses the X API client instance to fetch user data.
  * 
- * @param {NextRequest} request - The incoming request with query parameters.
+ * @param {NextRequest} request - The incoming request containing the token object.
  * @returns {NextResponse} - The JSON response containing the user data or an error message.
  */
 export async function GET(request: NextRequest) {
-  // Extract the access token from the URL parameters
-  const token = request.nextUrl.searchParams.get("accessToken");
-
-  // Check if the access token is provided
-  if (!token) {
-    console.error("Missing access token in the request.");
-    return NextResponse.json({ error: "Missing access token" }, { status: 400 });
-  }
-
   try {
-    // Initialize the Twitter API client with the access token
-    const client = new Client(token);
+    // Extract token object from request body or query (for example)
+    const tokenData = request.nextUrl.searchParams.get("tokenData") ? JSON.parse(request.nextUrl.searchParams.get("tokenData") as string) : null;
 
-    // Fetch user data using the Twitter API
+    if (!tokenData || !tokenData.access_token) {
+      return NextResponse.json({ error: "Missing token data" }, { status: 401 });
+    }
+
+    // Initialize the X API client with the tokenData
+    const client = await getApiClient(tokenData); // Pass the full token object to getApiClient
+
+    // Fetch user data using the X API
     const userResponse = await client.users.findMyUser();
 
     // Return the user data in the response
     return NextResponse.json({ user: userResponse.data });
   } catch (error: any) {
     // Log the error for debugging purposes
-    console.error("Error fetching user data from Twitter API:", error);
+    console.error("Error fetching user data from X API:", error);
 
     // Return a 500 response with the error message
-    return NextResponse.json({ error: "Failed to fetch user data" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to fetch user data", details: error.message }, { status: 500 });
   }
 }

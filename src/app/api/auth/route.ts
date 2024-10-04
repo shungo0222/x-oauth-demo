@@ -8,7 +8,7 @@ import { OAUTH_STATE } from "../../lib/constants";
  * It validates the code and state, then exchanges the code for an access token.
  * 
  * @param {NextRequest} request - The incoming request with query parameters.
- * @returns {NextResponse} - The JSON response containing the access token or an error message.
+ * @returns {NextResponse} - The JSON response containing the token object or an error message.
  */
 export async function GET(request: NextRequest) {
   console.log("API called for access token");
@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
   try {
     console.log("Code received:", code);
 
-    const authClient = getAuthClient(); // Retrieve the OAuth client instance
+    const authClient = await getAuthClient(); // Retrieve the OAuth client instance
 
     /**
      * Although this line doesn't perform any action in this context, removing it causes an error.
@@ -34,16 +34,16 @@ export async function GET(request: NextRequest) {
      * For more details, refer to: 
      * https://community.make.com/t/error-missing-required-parameter-code-verifier-from-http-module-with-oauth-2-0-request/17420/4
      */
-    generateAuthUrl(); // Necessary call to prevent 'code_verifier' error
+    await generateAuthUrl(); // Necessary call to prevent "code_verifier" error
 
     console.log("Requesting access token...");
 
     // Exchange the authorization code for an access token
     const tokenResponse = await authClient.requestAccessToken(code);
 
-    // Log and return the access token in the response
-    console.log("Access token received:", tokenResponse.token.access_token);
-    return NextResponse.json({ access_token: tokenResponse.token.access_token });
+    // Log and return the entire token object in the response
+    console.log("Token object received:", tokenResponse.token);
+    return NextResponse.json(tokenResponse.token);
   } catch (error: any) {
     // Log the error and return a 500 status code with error details
     console.error("Error fetching access token:", error);

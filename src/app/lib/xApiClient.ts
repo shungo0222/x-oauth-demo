@@ -12,7 +12,7 @@ let apiClient: Client | null = null;
  * This is used for user-specific authentication.
  * @returns {auth.OAuth2User} The OAuth2User client instance.
  */
-export const getAuthClient = (): auth.OAuth2User => {
+export const getAuthClient = async (): Promise<auth.OAuth2User> => {
   if (!authClient) {
     authClient = new auth.OAuth2User({
       client_id: process.env.NEXT_PUBLIC_CLIENT_ID as string,
@@ -21,6 +21,13 @@ export const getAuthClient = (): auth.OAuth2User => {
       scopes: ["tweet.read", "users.read", "offline.access"], // Define the required scopes
     });
   }
+
+  // Check if the token exists before checking for expiration
+  if (authClient.token && authClient.isAccessTokenExpired()) {
+    console.log("Access token expired. Refreshing...");
+    await authClient.refreshAccessToken();
+  }
+
   return authClient;
 };
 
@@ -40,13 +47,13 @@ export const getBearerClient = (): auth.OAuth2Bearer => {
 /**
  * Generate the authorization URL.
  * This URL is used to redirect the user to X's OAuth 2.0 authentication flow.
- * @returns {string} The generated authorization URL.
+ * @returns {Promise<string>} The generated authorization URL.
  */
-export const generateAuthUrl = (): string => {
-  const authClient = getAuthClient(); // Retrieve the singleton OAuth2User client
+export const generateAuthUrl = async (): Promise<string> => {
+  const authClient = await getAuthClient(); // Await the promise from getAuthClient
   return authClient.generateAuthURL({
     state: OAUTH_STATE, // Use the constant for the state value
-    code_challenge: "test", // In 'plain' method, code_verifier is directly used as the challenge
+    code_challenge: "test", // In "plain" method, code_verifier is directly used as the challenge
     code_challenge_method: "plain", // Using the plain method for simplicity
   });
 };
@@ -54,13 +61,28 @@ export const generateAuthUrl = (): string => {
 /**
  * Get the X API Client instance.
  * Uses the authenticated OAuth2User or OAuth2Bearer client depending on the use case.
+ * If using OAuth2User, it checks for token expiration and refreshes if necessary.
+ * @param {string | null} token - The OAuth2User token to be used for authentication.
  * @param {boolean} useBearer - If true, uses the OAuth2Bearer client. Defaults to false (OAuth2User).
- * @returns {Client} The Twitter API client instance.
+ * @returns {Promise<Client>} The X API client instance.
  */
-export const getApiClient = (useBearer: boolean = false): Client => {
+export const getApiClient = async (token: any | null = null, useBearer: boolean = false): Promise<Client> => {
   if (!apiClient) {
-    const client = useBearer ? getBearerClient() : getAuthClient(); // Choose OAuth2Bearer or OAuth2User client
+    // Use OAuth2Bearer client if useBearer is true, otherwise use OAuth2User client
+    const client = useBearer ? getBearerClient() : await getAuthClient();
+
+    // If useBearer is false (using OAuth2User), ensure token is provided
+    if (!useBearer && !token) {
+      throw new Error("Token is required when using OAuth2User.");
+    }
+
+    // If a token is provided, manually set the token in the authClient
+    if (token && !useBearer) {
+      (client as auth.OAuth2User).token = token;
+    }
+
     apiClient = new Client(client);
   }
+
   return apiClient;
 };

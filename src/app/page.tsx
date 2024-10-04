@@ -15,7 +15,7 @@ export default function Home() {
    */
   const fetchAuthUrl = async () => {
     try {
-      const url = generateAuthUrl();
+      const url = await generateAuthUrl();
       setAuthUrl(url);
     } catch (error) {
       console.error("Error generating auth URL:", error);

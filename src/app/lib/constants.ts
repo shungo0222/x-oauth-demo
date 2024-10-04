@@ -1,6 +1,6 @@
 /**
  * API Endpoints used throughout the application.
- * Functions are provided to dynamically insert required parameters such as `code`, `state`, and `accessToken`.
+ * Functions are provided to dynamically insert required parameters such as `code` and `state`.
  */
 export const API_ENDPOINTS = {
   /**
@@ -12,11 +12,13 @@ export const API_ENDPOINTS = {
   AUTH: (code: string, state: string): string => `/api/auth?code=${code}&state=${state}`,
 
   /**
-   * Endpoint for fetching user information using the access token.
-   * @param {string} token - The access token for authenticated API requests.
-   * @returns {string} Full URL for the user information request.
+   * Endpoint for fetching user information.
+   * @param {Object} tokenData - The token object containing access token and other information.
+   * @returns {string} Full URL for the user information request with encoded token data.
    */
-  USER: (token: string): string => `/api/user?accessToken=${token}`,
+  USER: (tokenData: { access_token: string, token_type: string, scope: string, refresh_token: string, expires_at: number }): string => {
+    return `/api/user?tokenData=${encodeURIComponent(JSON.stringify(tokenData))}`;
+  }
 };
 
 // Define the state value as a constant that can be reused across files
