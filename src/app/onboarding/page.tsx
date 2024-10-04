@@ -78,7 +78,7 @@ export default function Onboarding() {
   }, [searchParams]);
 
   return (
-    <div className="flex flex-col min-h-screen items-center justify-center bg-gray-100">
+    <div className="flex flex-col min-h-screen py-20 items-center justify-center bg-gray-100">
       <h1 className="text-3xl font-bold mb-6 text-gray-800">Onboarding</h1>
       
       {/* Display token information in table format */}
@@ -129,20 +129,25 @@ export default function Onboarding() {
               <tr key={key}>
                 <td className="border border-gray-300 px-4 py-2">{key}</td>
                 <td className="border border-gray-300 px-4 py-2">
-                  {/* Check if value is an object (like public_metrics) and handle accordingly */}
-                  {typeof value === "object" && value !== null ? (
-                    <table className="table-auto border-collapse border border-gray-200">
-                      <tbody>
-                        {Object.entries(value).map(([subKey, subValue]) => (
-                          <tr key={subKey}>
-                            <td className="border border-gray-200 px-2 py-1">{subKey}</td>
-                            <td className="border border-gray-200 px-2 py-1">{String(subValue)}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                  {/* Check if key is profile_image_url and display the image */}
+                  {key === "profile_image_url" ? (
+                    <img src={String(value)} alt="Profile Image" className="w-16 h-16 rounded-full" />
                   ) : (
-                    String(value)
+                    // Check if value is an object (like public_metrics) and handle accordingly
+                    typeof value === "object" && value !== null ? (
+                      <table className="table-auto border-collapse border border-gray-200">
+                        <tbody>
+                          {Object.entries(value).map(([subKey, subValue]) => (
+                            <tr key={subKey}>
+                              <td className="border border-gray-200 px-2 py-1">{subKey}</td>
+                              <td className="border border-gray-200 px-2 py-1">{String(subValue)}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    ) : (
+                      String(value)
+                    )
                   )}
                 </td>
               </tr>
